@@ -1,23 +1,12 @@
-import {
-  Button,
-  TextInput,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  FlatList,
-} from "react-native";
 import { useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import GoalInput from "./components/Goal/GoalInput";
+import GoalItem from "./components/Goal/GoalItem";
 
 export default function App() {
-  const [enteredGoalText, setEnteredGoalText] = useState("");
   const [courseGoals, setCourseGoals] = useState([]);
 
-  function inputHandler(enteredText) {
-    setEnteredGoalText(enteredText);
-  }
-
-  function addGoal() {
+  function addGoalHandler(enteredGoalText) {
     setCourseGoals((currentCourseGoals) => [
       ...currentCourseGoals,
       { text: enteredGoalText, id: Math.random().toString },
@@ -25,25 +14,14 @@ export default function App() {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Your course goal!"
-          onChangeText={inputHandler}
-        />
-        <Button title="Add Goal" onPress={addGoal} />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
       <View style={styles.goalsContainer}>
         <Text>List of goals:</Text>
         <FlatList
           data={courseGoals}
           renderItem={(itemData) => {
             console.log(itemData);
-            return (
-              <View style={styles.goalItem}>
-                <Text style={styles.goalText}>{itemData.item.text}</Text>
-              </View>
-            );
+            return <GoalItem itemData={itemData} />;
           }}
           keyExtractor={(item, index) => {
             return item.id;
@@ -60,22 +38,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     paddingHorizontal: 16,
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "#CCCCCC",
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#CCCCCC",
-    width: "70%",
-    marginRight: 8,
-    padding: 8,
   },
 
   goalsContainer: {
